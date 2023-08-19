@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('/static/sandro-schuh-HgwY_YQ1m0w-unsplash.jpg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .main-container {
+            display: flex;
+            width: 100%; /* Increased the width to take more space */
+            max-width: 1800px; /* You can adjust this as needed */
+            margin: 20px;
+        }
+        .section {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            text-align: center;
+        }
+        #caption {
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        .test-case-caption {
+            font-style: italic;
+            font-weight: bold;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Captioning</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="main-container">
+    <!-- Test Case 1 -->
+    <div class="section test-case">
+        <img src="/static/7615.png" alt="Test Case 1">
+        <p class="test-case-caption">Caption: Cầu thủ bóng chày đang cầm gậy thi đấu trên sân.</p>
+    </div>
+
+    <!-- Upload an Image -->
+    <div class="section">
+        <h1>Upload an Image</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="custom-file mb-3">
+                <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/*">
+                <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Upload</button>
+        </form>
+        <hr>
+        <h4 class="text-center">Caption</h4>
+        <p id="caption" class="text-center"></p>
+        <img id="uploadedImage" src="" alt="Uploaded Image" class="img-fluid mx-auto d-block mt-3" style="max-height: 400px;">
+    </div>
+
+    <!-- Test Case 2 -->
+    <div class="section test-case">
+        <img src="/static/43163.png" alt="Test Case 2">
+        <p class="test-case-caption">Caption: Một người đàn ông đang chuẩn bị đánh quả bóng tennis</p>
+    </div>
+</div>
+<!-- Rest of the code remains the same -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Javascript to fetch the caption and display the uploaded image
+    document.querySelector('form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const response = await fetch('/upload', { method: 'POST', body: formData });
+        const result = await response.json();
+        let caption = result.caption;
+        caption = caption.charAt(0).toUpperCase() + caption.slice(1); // Uppercase the first letter
+
+        // Display caption
+        document.getElementById('caption').innerText = caption;
+
+        // Display the uploaded image
+        const uploadedImage = document.getElementById('uploadedImage');
+        const imageFile = e.target.elements.image.files[0];
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            uploadedImage.src = reader.result;
+        }
+        reader.readAsDataURL(imageFile);
+    });
+</script>
+</body>
+</html>
